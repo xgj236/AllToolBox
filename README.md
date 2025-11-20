@@ -222,23 +222,14 @@
             <div class="logo">
                 <i class="fas fa-toolbox"></i>
             </div>
-            <h1>AllToolBox</h1>
-            <p class="tagline">一个专为小天才设计的强大工具箱，包含多种实用工具</p>
+            <h1 id="appTitle"></h1>
+            <p class="tagline" id="appDescription"></p>
         </header>
         
         <div class="content">
             <section class="download-section">
                 <h2 class="download-title">立即下载 AllToolBox</h2>
-                <div class="download-buttons">
-                    <a href="https://atb.xgj.qzz.io/AllToolBox.zip" class="download-btn">
-                        <i class="fas fa-download"></i>
-                        主下载通道
-                    </a>
-                    <a href="https://xgj236.github.io/AllToolBox.zip" class="download-btn secondary">
-                        <i class="fas fa-rocket"></i>
-                        备用下载通道
-                    </a>
-                </div>
+                <div class="download-buttons" id="downloadButtons"></div>
             </section>
             
             <section class="changelog-section">
@@ -246,26 +237,101 @@
                     <i class="fas fa-history"></i>
                     更新日志
                 </h2>
-                <div class="changelog-container">
-                </div>
+                <div class="changelog-container" id="changelogContainer"></div>
             </section>
         </div>
         
         <footer>
-            <p>AllToolBox - 小天才工具箱 | 作者：快乐的小公爵</p>
+            <p id="footerText"></p>
         </footer>
     </div>
 
     <script>
-        // 添加简单的交互效果
+        // 应用数据变量
+        const appData = {
+            title: "AllToolBox",
+            description: "一个专为小天才设计的强大工具箱，包含多种实用工具，提高您的学习和工作效率",
+            footerText: "AllToolBox - 小天才工具箱 | 作者：快乐的小公爵",
+            downloadLinks: [
+                {
+                    name: "主下载通道",
+                    url: "https://atb.xgj.qzz.io/AllToolBox.zip",
+                    icon: "fas fa-download",
+                    class: ""
+                },
+                {
+                    name: "备用下载通道",
+                    url: "https://xgj236.github.io/AllToolBox.zip",
+                    icon: "fas fa-rocket",
+                    class: "secondary"
+                }
+            ],
+            changelog: [
+                {
+                    version: "v1.0.0",
+                    date: "未上线",
+                    changes: [
+                        "1.",
+                        "2.",
+                        "3.",
+                        "4."
+                    ]
+                },
+            ]
+        };
+
+        // 初始化页面
         document.addEventListener('DOMContentLoaded', function() {
-            // 为更新日志项添加点击效果
+            // 设置页面内容
+            document.getElementById('appTitle').textContent = appData.title;
+            document.getElementById('appDescription').textContent = appData.description;
+            document.getElementById('footerText').textContent = appData.footerText;
+            
+            // 创建下载按钮
+            const downloadButtonsContainer = document.getElementById('downloadButtons');
+            appData.downloadLinks.forEach(link => {
+                const button = document.createElement('a');
+                button.href = link.url;
+                button.className = `download-btn ${link.class}`;
+                button.innerHTML = `<i class="${link.icon}"></i> ${link.name}`;
+                downloadButtonsContainer.appendChild(button);
+            });
+            
+            // 创建更新日志
+            const changelogContainer = document.getElementById('changelogContainer');
+            appData.changelog.forEach(item => {
+                const changelogItem = document.createElement('div');
+                changelogItem.className = 'changelog-item';
+                
+                const version = document.createElement('div');
+                version.className = 'version';
+                version.textContent = item.version;
+                
+                const date = document.createElement('div');
+                date.className = 'date';
+                date.textContent = item.date;
+                
+                const changes = document.createElement('ul');
+                changes.className = 'changes';
+                
+                item.changes.forEach(change => {
+                    const li = document.createElement('li');
+                    li.textContent = change;
+                    changes.appendChild(li);
+                });
+                
+                changelogItem.appendChild(version);
+                changelogItem.appendChild(date);
+                changelogItem.appendChild(changes);
+                
+                changelogContainer.appendChild(changelogItem);
+            });
+            
+            // 添加交互效果
             const changelogItems = document.querySelectorAll('.changelog-item');
             changelogItems.forEach(item => {
                 item.addEventListener('click', function() {
-                    // 移除其他项目的active类
                     changelogItems.forEach(i => i.classList.remove('active'));
-                    // 为当前项目添加active类
                     this.classList.add('active');
                 });
             });
@@ -274,7 +340,6 @@
             const downloadBtns = document.querySelectorAll('.download-btn');
             downloadBtns.forEach(btn => {
                 btn.addEventListener('click', function(e) {
-                    // 创建点击效果
                     const rect = this.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
