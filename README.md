@@ -266,7 +266,7 @@
         // 应用数据变量
         const appData = {
             title: "AllToolBox",
-            description: "一个专为小天才设计的强大工具箱，包含多种实用工具，提高您的学习和工作效率",
+            description: "一个专为小天才设计的强大工具箱，包含多种实用工具",
             footerText: "AllToolBox - 小天才工具箱 | 作者：快乐的小公爵",
             downloadLinks: [
                 {
