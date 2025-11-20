@@ -186,6 +186,18 @@
             left: 0;
         }
         
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 20px;
+            color: #e74c3c;
+        }
+        
         footer {
             background-color: #2c3e50;
             color: white;
@@ -237,7 +249,11 @@
                     <i class="fas fa-history"></i>
                     更新日志
                 </h2>
-                <div class="changelog-container" id="changelogContainer"></div>
+                <div class="changelog-container" id="changelogContainer">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> 正在加载更新日志...
+                    </div>
+                </div>
             </section>
         </div>
         
@@ -265,41 +281,84 @@
                     icon: "fas fa-rocket",
                     class: "secondary"
                 }
-            ],
-            changelog: [
-                {
-                    version: "v1.0.0",
-                    date: "未上线",
-                    changes: [
-                        "1.",
-                        "2.",
-                        "3.",
-                        "4."
-                    ]
-                },
             ]
         };
 
-        // 初始化页面
-        document.addEventListener('DOMContentLoaded', function() {
-            // 设置页面内容
-            document.getElementById('appTitle').textContent = appData.title;
-            document.getElementById('appDescription').textContent = appData.description;
-            document.getElementById('footerText').textContent = appData.footerText;
+        // 解析更新日志文本
+        function parseChangelog(text) {
+            const changelogItems = [];
+            const sections = text.split(/(?=版本:)/g); // 按"版本:"分割
             
-            // 创建下载按钮
-            const downloadButtonsContainer = document.getElementById('downloadButtons');
-            appData.downloadLinks.forEach(link => {
-                const button = document.createElement('a');
-                button.href = link.url;
-                button.className = `download-btn ${link.class}`;
-                button.innerHTML = `<i class="${link.icon}"></i> ${link.name}`;
-                downloadButtonsContainer.appendChild(button);
+            sections.forEach(section => {
+                if (section.trim() === '') return;
+                
+                const lines = section.split('\n').map(line => line.trim()).filter(line => line !== '');
+                
+                // 提取版本号
+                const versionMatch = lines[0].match(/版本:\s*(.+)/);
+                if (!versionMatch) return;
+                
+                const version = versionMatch[1];
+                
+                // 提取日期
+                const dateMatch = lines[1].match(/日期:\s*(.+)/);
+                const date = dateMatch ? dateMatch[1] : '未知日期';
+                
+                // 提取更新内容
+                const changes = [];
+                let inChangesSection = false;
+                
+                for (let i = 2; i < lines.length; i++) {
+                    if (lines[i].startsWith('更新内容:')) {
+                        inChangesSection = true;
+                        continue;
+                    }
+                    
+                    if (inChangesSection && lines[i].startsWith('-')) {
+                        changes.push(lines[i].substring(1).trim());
+                    }
+                }
+                
+                if (changes.length > 0) {
+                    changelogItems.push({
+                        version,
+                        date,
+                        changes
+                    });
+                }
             });
             
-            // 创建更新日志
+            return changelogItems;
+        }
+
+        // 从URL加载更新日志
+        async function loadChangelogFromURL() {
+            try {
+                const response = await fetch('https://atb.xgj.qzz.io/更新日志.txt');
+                if (!response.ok) {
+                    throw new Error('无法加载更新日志文件');
+                }
+                
+                const text = await response.text();
+                return parseChangelog(text);
+            } catch (error) {
+                console.error('加载更新日志时出错:', error);
+                throw error;
+            }
+        }
+
+        // 渲染更新日志
+        function renderChangelog(changelogItems) {
             const changelogContainer = document.getElementById('changelogContainer');
-            appData.changelog.forEach(item => {
+            
+            if (changelogItems.length === 0) {
+                changelogContainer.innerHTML = '<div class="error">没有找到更新日志</div>';
+                return;
+            }
+            
+            changelogContainer.innerHTML = '';
+            
+            changelogItems.forEach(item => {
                 const changelogItem = document.createElement('div');
                 changelogItem.className = 'changelog-item';
                 
@@ -326,14 +385,42 @@
                 
                 changelogContainer.appendChild(changelogItem);
             });
+        }
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置页面内容
+            document.getElementById('appTitle').textContent = appData.title;
+            document.getElementById('appDescription').textContent = appData.description;
+            document.getElementById('footerText').textContent = appData.footerText;
+            
+            // 创建下载按钮
+            const downloadButtonsContainer = document.getElementById('downloadButtons');
+            appData.downloadLinks.forEach(link => {
+                const button = document.createElement('a');
+                button.href = link.url;
+                button.className = `download-btn ${link.class}`;
+                button.innerHTML = `<i class="${link.icon}"></i> ${link.name}`;
+                downloadButtonsContainer.appendChild(button);
+            });
+            
+            // 加载并显示更新日志
+            loadChangelogFromURL()
+                .then(changelogItems => {
+                    renderChangelog(changelogItems);
+                })
+                .catch(error => {
+                    document.getElementById('changelogContainer').innerHTML = 
+                        `<div class="error">加载更新日志失败: ${error.message}</div>`;
+                });
             
             // 添加交互效果
-            const changelogItems = document.querySelectorAll('.changelog-item');
-            changelogItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    changelogItems.forEach(i => i.classList.remove('active'));
-                    this.classList.add('active');
-                });
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.changelog-item')) {
+                    const changelogItems = document.querySelectorAll('.changelog-item');
+                    changelogItems.forEach(item => item.classList.remove('active'));
+                    e.target.closest('.changelog-item').classList.add('active');
+                }
             });
             
             // 添加下载按钮点击动画
