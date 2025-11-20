@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -224,7 +223,7 @@
                 <i class="fas fa-toolbox"></i>
             </div>
             <h1>AllToolBox</h1>
-            <p class="tagline">一个专为小天才设计的强大工具箱，包含多种实用工具，提高您的学习和工作效率</p>
+            <p class="tagline">一个专为小天才设计的强大工具箱，包含多种实用工具</p>
         </header>
         
         <div class="content">
@@ -248,54 +247,12 @@
                     更新日志
                 </h2>
                 <div class="changelog-container">
-                    <div class="changelog-item">
-                        <div class="version">v2.1.0</div>
-                        <div class="date">2023年10月15日</div>
-                        <ul class="changes">
-                            <li>新增文件批量重命名工具</li>
-                            <li>优化图片压缩算法，压缩率提升15%</li>
-                            <li>修复了文本提取工具中的编码问题</li>
-                            <li>界面响应速度提升20%</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="changelog-item">
-                        <div class="version">v2.0.5</div>
-                        <div class="date">2023年9月28日</div>
-                        <ul class="changes">
-                            <li>新增PDF转Word功能</li>
-                            <li>修复了视频格式转换中的音频同步问题</li>
-                            <li>优化了内存使用效率</li>
-                            <li>更新了软件许可协议</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="changelog-item">
-                        <div class="version">v2.0.0</div>
-                        <div class="date">2023年8月10日</div>
-                        <ul class="changes">
-                            <li>全新设计的用户界面</li>
-                            <li>新增代码格式化工具</li>
-                            <li>新增颜色选择器和调色板</li>
-                            <li>优化了启动速度和性能</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="changelog-item">
-                        <div class="version">v1.5.2</div>
-                        <div class="date">2023年6月22日</div>
-                        <ul class="changes">
-                            <li>修复了文本编辑器中的保存问题</li>
-                            <li>新增快捷键自定义功能</li>
-                            <li>优化了多语言支持</li>
-                        </ul>
-                    </div>
                 </div>
             </section>
         </div>
         
         <footer>
-            <p>© 2023 AllToolBox - 小天才工具箱 | 设计精美，功能强大</p>
+            <p>AllToolBox - 小天才工具箱 | 作者：快乐的小公爵</p>
         </footer>
     </div>
 
