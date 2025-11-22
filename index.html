@@ -393,12 +393,13 @@
                 
                 // 显示系统信息
                 systemDetails.textContent = `检测到的操作系统: ${osName} | 用户代理: ${userAgent}`;
-                systemInfo.style.display = 'block';
                 
-                // 如果不是Windows，显示提示
+                // 如果不是Windows，显示提示和系统信息
                 if (!isWindows) {
                     notification.classList.add('show');
+                    systemInfo.style.display = 'block';
                 }
+                // 如果是Windows，不显示系统信息
                 
                 return { osName, isWindows };
             }
@@ -479,30 +480,13 @@
         // 从URL加载更新日志
         async function loadChangelogFromURL() {
             try {
-                // 模拟更新日志数据
-                const mockChangelog = `版本: 1.2.0
-日期: 2023-10-15
-更新内容:
-- 新增系统优化工具
-- 修复了网络诊断工具的兼容性问题
-- 提升了整体性能
-
-版本: 1.1.5
-日期: 2023-09-28
-更新内容:
-- 新增文件管理工具
-- 优化了用户界面
-- 修复了若干已知问题`;
-
-                // 在实际环境中，您可以使用以下代码：
-                // const response = await fetch('https://atb.xgj.qzz.io/更新日志.txt');
-                // if (!response.ok) {
-                //     throw new Error('无法加载更新日志文件');
-                // }
-                // const text = await response.text();
+                const response = await fetch('https://atb.xgj.qzz.io/更新日志.txt');
+                if (!response.ok) {
+                    throw new Error('无法加载更新日志文件');
+                }
                 
-                // 这里使用模拟数据
-                return parseChangelog(mockChangelog);
+                const text = await response.text();
+                return parseChangelog(text);
             } catch (error) {
                 console.error('加载更新日志时出错:', error);
                 throw error;
