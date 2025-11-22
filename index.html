@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -18,6 +19,56 @@
             line-height: 1.6;
             min-height: 100vh;
             padding: 20px;
+            padding-top: 80px; /* 为顶部提示条预留空间 */
+        }
+        
+        /* 操作系统提示条样式 */
+        .os-notification {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to right, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        .os-notification.show {
+            display: block;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .close-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
         }
         
         .container {
@@ -206,6 +257,19 @@
             font-size: 0.9rem;
         }
         
+        .system-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 30px;
+            color: white;
+            display: none;
+        }
+        
+        .system-info h3 {
+            margin-bottom: 10px;
+        }
+        
         @media (max-width: 768px) {
             .download-buttons {
                 flex-direction: column;
@@ -229,19 +293,38 @@
     </style>
 </head>
 <body>
+    <!-- 操作系统提示条 -->
+    <div class="os-notification" id="osNotification">
+        <span>⚠️ 此工具箱专为Windows系统打造，在其他操作系统上可能无法正常工作。</span>
+        <button class="close-btn" id="closeNotification">×</button>
+    </div>
+    
     <div class="container">
         <header>
             <div class="logo">
                 <i class="fas fa-toolbox"></i>
             </div>
-            <h1 id="appTitle"></h1>
-            <p class="tagline" id="appDescription"></p>
+            <h1 id="appTitle">AllToolBox</h1>
+            <p class="tagline" id="appDescription">一个专为小天才设计的强大工具箱，包含多种实用工具</p>
+            
+            <!-- 系统信息显示区域 -->
+            <div class="system-info" id="systemInfo">
+                <h3>系统信息</h3>
+                <p id="systemDetails">正在检测您的操作系统...</p>
+            </div>
         </header>
         
         <div class="content">
             <section class="download-section">
                 <h2 class="download-title">立即下载 AllToolBox</h2>
-                <div class="download-buttons" id="downloadButtons"></div>
+                <div class="download-buttons" id="downloadButtons">
+                    <a href="https://atb.xgj.qzz.io/AllToolBox.zip" class="download-btn">
+                        <i class="fas fa-download"></i> 主下载通道
+                    </a>
+                    <a href="https://xgj236.github.io/AllToolBox.zip" class="download-btn secondary">
+                        <i class="fas fa-rocket"></i> 备用下载通道
+                    </a>
+                </div>
             </section>
             
             <section class="changelog-section">
@@ -258,11 +341,61 @@
         </div>
         
         <footer>
-            <p id="footerText"></p>
+            <p id="footerText">AllToolBox - 小天才工具箱 | 作者：快乐的小公爵</p>
         </footer>
     </div>
 
     <script>
+        // 操作系统检测功能
+        function detectOS() {
+            const notification = document.getElementById('osNotification');
+            const closeBtn = document.getElementById('closeNotification');
+            const systemDetails = document.getElementById('systemDetails');
+            const systemInfo = document.getElementById('systemInfo');
+            
+            // 检测操作系统
+            function checkOS() {
+                const userAgent = window.navigator.userAgent;
+                const platform = window.navigator.platform;
+                
+                let osName = '未知系统';
+                let isWindows = false;
+                
+                // 检测Windows
+                if (/Win/.test(platform)) {
+                    osName = 'Windows';
+                    isWindows = true;
+                } else if (/Mac/.test(platform)) {
+                    osName = 'macOS';
+                } else if (/Linux/.test(platform)) {
+                    osName = 'Linux';
+                } else if (/Android/.test(userAgent)) {
+                    osName = 'Android';
+                } else if (/iOS|iPhone|iPad|iPod/.test(userAgent)) {
+                    osName = 'iOS';
+                }
+                
+                // 显示系统信息
+                systemDetails.textContent = `检测到的操作系统: ${osName} | 用户代理: ${userAgent}`;
+                systemInfo.style.display = 'block';
+                
+                // 如果不是Windows，显示提示
+                if (!isWindows) {
+                    notification.classList.add('show');
+                }
+                
+                return { osName, isWindows };
+            }
+            
+            // 关闭提示
+            closeBtn.addEventListener('click', function() {
+                notification.classList.remove('show');
+            });
+            
+            // 检测操作系统
+            checkOS();
+        }
+
         // 应用数据变量
         const appData = {
             title: "AllToolBox",
@@ -413,6 +546,9 @@
                     document.getElementById('changelogContainer').innerHTML = 
                         `<div class="error">加载更新日志失败: ${error.message}</div>`;
                 });
+            
+            // 检测操作系统
+            detectOS();
             
             // 添加交互效果
             document.addEventListener('click', function(e) {
