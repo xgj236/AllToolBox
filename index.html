@@ -131,6 +131,7 @@
             justify-content: center;
             gap: 20px;
             flex-wrap: wrap;
+            margin-bottom: 25px; /* 为历史版本按钮增加间距 */
         }
         
         .download-btn {
@@ -160,6 +161,34 @@
         
         .download-btn.secondary:hover {
             box-shadow: 0 8px 20px rgba(0, 176, 155, 0.4);
+        }
+        
+        /* 历史版本按钮样式 */
+        .history-btn-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .history-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #8e9eab 0%, #eef2f3 100%);
+            color: #333;
+            padding: 10px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+        
+        .history-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #a8b4c0 0%, #f5f7f9 100%);
         }
         
         .changelog-section {
@@ -320,6 +349,10 @@
                 <div class="download-buttons" id="downloadButtons">
                     <!-- 下载按钮将通过JavaScript动态生成，确保只生成一次 -->
                 </div>
+                <!-- 历史版本按钮容器 -->
+                <div class="history-btn-container" id="historyButtonContainer">
+                    <!-- 历史版本按钮将通过JavaScript动态生成 -->
+                </div>
             </section>
             
             <section class="changelog-section">
@@ -350,6 +383,7 @@
                 {
                     name: "直链下载",
                     url: "https://1135-vip-download-cdn.123295.com/123-577/c84c96e1/1853224945-0/c84c96e1993a17c2ccb4b9a1a5d17a41/c-m42?v=5&t=1765593654&r=WX48OY&bzc=1&bzs=313835333232343934353a343a313a353430313233313135&ur=vvagaagvnagn&urn=1&s=176559365491b3bc9a07518838af70aae69225286c&bzp=0&bi=3832589326&filename=AllToolBox1.2.1.7z&x-mf-biz-cid=e6dd4905-0fc4-4688-9d26-9362cfd1f045-584000&ndcp=1&cache_type=1",
+                    icon: "fas fa-download", // 添加直链下载图标
                     class: ""
                 },
                 {
@@ -358,7 +392,9 @@
                     icon: "fas fa-rocket",
                     class: "secondary"
                 }
-            ]
+            ],
+            // 添加历史版本链接
+            historyLink: "https://www.123865.com/s/qP6Fvd-mpqW"
         };
 
         // 操作系统检测功能
@@ -415,9 +451,11 @@
         // 创建下载按钮
         function createDownloadButtons() {
             const downloadButtonsContainer = document.getElementById('downloadButtons');
+            const historyButtonContainer = document.getElementById('historyButtonContainer');
             
             // 清空容器，避免重复创建
             downloadButtonsContainer.innerHTML = '';
+            historyButtonContainer.innerHTML = '';
             
             // 创建下载按钮
             appData.downloadLinks.forEach(link => {
@@ -425,8 +463,20 @@
                 button.href = link.url;
                 button.className = `download-btn ${link.class}`;
                 button.innerHTML = `<i class="${link.icon}"></i> ${link.name}`;
+                button.target = "_blank"; // 在新标签页打开
                 downloadButtonsContainer.appendChild(button);
             });
+            
+            // 创建历史版本按钮
+            if (appData.historyLink) {
+                const historyButton = document.createElement('a');
+                historyButton.href = appData.historyLink;
+                historyButton.className = "history-btn";
+                historyButton.innerHTML = '<i class="fas fa-history"></i> 历史版本';
+                historyButton.target = "_blank"; // 在新标签页打开
+                historyButton.title = "查看历史版本";
+                historyButtonContainer.appendChild(historyButton);
+            }
         }
 
         // 解析更新日志文本
@@ -539,7 +589,7 @@
             document.getElementById('appDescription').textContent = appData.description;
             document.getElementById('footerText').textContent = appData.footerText;
             
-            // 创建下载按钮（只创建一次）
+            // 创建下载按钮和历史版本按钮（只创建一次）
             createDownloadButtons();
             
             // 检测操作系统
@@ -565,7 +615,7 @@
             });
             
             // 添加下载按钮点击动画
-            const downloadBtns = document.querySelectorAll('.download-btn');
+            const downloadBtns = document.querySelectorAll('.download-btn, .history-btn');
             downloadBtns.forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     const rect = this.getBoundingClientRect();
