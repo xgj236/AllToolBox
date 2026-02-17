@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<packages>
+    <section id="Nc.Atb" name="AndroidToolBox" nouserselect="true" default="true">
+        <package id="Nc.Atb.Core" name='{"zh_CN":"AndroidToolBox核心组件","en_US":"AndroidToolBox Core Component"}' description="" official="true" type="core" author="AtbDev" required="true" default="true">
+            <version name="1.3.5" code="10305" downloadurl="https://ghfast.top/https://github.com/xgj236/AllToolBox/releases/download/AllToolBox/AllToolBox1.3.5-NoNd03.7z" filetype="7z" installto="/" unpack="true"/>
+        </package>
+    
+    </section>
+    <section id="External.Devices" name='{"zh_CN":"设备兼容性","en_US":"Device Compatibility"}' default="true">
+        <package id="External.Devices.ND03" name="ND03" description="Z10" official="true" type="compatibility" author="AtbDev" required="false" default="true">
+            <version name="3.0.2" code="30002" downloadurl="https://pan.xgj.qzz.io/d/Baidu/root/ND03.zip.7z" filetype="7z" installto="/bin/EDL/" unpack="true"/>
+        </package>
+    </section>
+</packages>
