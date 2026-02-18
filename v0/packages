@@ -8,7 +8,7 @@
     </section>
     <section id="External.Devices" name='{"zh_CN":"设备兼容性","en_US":"Device Compatibility"}' default="true">
         <package id="External.Devices.ND03" name="ND03" description="Z10" official="true" type="compatibility" author="AtbDev" required="false" default="true">
-            <version name="3.0.2" code="30002" downloadurl="https://pan.xgj.qzz.io/d/Baidu/root/ND03.zip.7z" filetype="7z" installto="/bin/EDL/" unpack="true"/>
+            <version name="3.0.2" code="30002" downloadurl="https://pan.xgj.qzz.io/d/Baidu/root/ND03.zip.7z" filetype="7z" installto="/bin/" unpack="true"/>
         </package>
     </section>
 </packages>
